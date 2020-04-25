@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjetoIdentity.Data;
+using ProjetoIdentity.Models;
 using ProjetoIdentity.Models.Entities;
 using System.Linq;
 
@@ -34,6 +36,40 @@ namespace ProjetoIdentity.Controllers
                 _context.SaveChanges();
             }
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Edit(int? id){
+
+            if(id == null){
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
+            };
+
+            var categoria = _context.Categorias.First(c => c.Id.Equals(id));
+
+            return View(categoria);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Categoria categoria){
+
+            if(categoria.Id != id){
+                return RedirectToAction(nameof(Error), new {message = "O id fornecido não corresponde"});
+            }
+
+            _context.Categorias.Update(categoria);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Error(string message){
+
+            var viewModel = new ErrorViewModel {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View();
         }
     }
 }

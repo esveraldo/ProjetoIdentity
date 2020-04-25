@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoIdentity.Data;
+using ProjetoIdentity.Models;
 using ProjetoIdentity.Models.Entities;
 using ProjetoIdentity.Models.ViewModels;
 using System.Linq;
@@ -25,10 +27,12 @@ namespace ProjetoIdentity.Controllers
         }
 
         public IActionResult Details(int? id){
-            var produto = _context.Produtos.Include(c => c.Categoria).First(p => p.Id.Equals(id));
-            if(produto == null){
-                return NotFound();
+            
+            if(id == null){
+                return RedirectToAction(nameof(Error), new { message = "Id não fornecido."});
             }
+
+            var produto = _context.Produtos.Include(c => c.Categoria).First(p => p.Id.Equals(id));
 
             return View(produto);
         }
@@ -59,7 +63,7 @@ namespace ProjetoIdentity.Controllers
         [HttpGet]
         public IActionResult Edit(int? id){
             if(id == null){
-                NotFound();
+                RedirectToAction(nameof(Error), new { message = "Id não fornecido."});
             }
             var produto = _context.Produtos.First(p => p.Id.Equals(id));
             var categorias = _context.Categorias.ToList();
@@ -70,7 +74,7 @@ namespace ProjetoIdentity.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Produto produto){
             if(id != produto.Id){
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado."});
             }
             _context.Produtos.Update(produto);
             _context.SaveChanges();
@@ -87,11 +91,21 @@ namespace ProjetoIdentity.Controllers
         public IActionResult Delete(int id, Produto produto){
             var prod = _context.Produtos.First(p => p.Id.Equals(id));
             if(prod.Id != id){
-                NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
             }
             _context.Produtos.Remove(prod);
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Error(string message){
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id
+                            ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModel);
         }
     }
 }
