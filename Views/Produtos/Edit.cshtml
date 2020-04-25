@@ -1,0 +1,29 @@
+@model ProjetoIdentity.Models.ViewModels.ProdutoFormViewModel;
+
+@{
+    ViewData["title"] = "Editar Produtos";
+}
+
+<div class="row">
+    <h2>@ViewData["title"]</h2>
+
+    <p><a asp-action="Index" class="btn btn-primary">Voltar a lista de produtos</a></p>
+    <form asp-action="Edit">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <input asp-for="Produto.Id" type="hidden">
+        <div class="form-group">
+            <input asp-for="Produto.Nome" type="text" class="form-control">
+            <span asp-validation-for="Produto.Nome" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Produto.Descricao" type="text" class="form-control">
+            <span asp-validation-for="Produto.Descricao" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <select asp-for="Produto.CategoriaId" asp-items="@(new SelectList(Model.Categorias, "Id", "Nome"))" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary">Editar</button>
+        </div>
+    </form>
+</div>

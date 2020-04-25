@@ -1,0 +1,29 @@
+@model ProjetoIdentity.Models.Entities.Produto
+
+@{
+    ViewData["title"] = "Detalhes do produto";
+}
+
+<div class="row">
+<h2>@ViewData["title"]</h2>
+
+<h3>Produto</h3>
+<p><a asp-action="Index" class="btn btn-primary">Voltar a lista de produtos</a></p>
+
+<hr />
+<div>
+<dl class="horizontal">
+    <dt>@Html.DisplayNameFor(model => model.Nome)</dt>
+    <dd>@Html.DisplayFor(model => model.Nome)</dd>
+    <dt>@Html.DisplayNameFor(model => model.Descricao)</dt>
+    <dd>@Html.DisplayFor(model => model.Descricao)</dd>
+    <dt>@Html.DisplayNameFor(model => model.Categoria)</dt>
+    <dd>@Html.DisplayFor(model => model.Categoria.Nome)</dd>
+</dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+</div>
+
+</div>
